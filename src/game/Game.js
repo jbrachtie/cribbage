@@ -1,23 +1,15 @@
 // import { INVALID_MOVE } from 'boardgame.io/core';
 import Deck from './Deck';
 
-let testing = true;
 export const Cribbage = {
-  setup: (ctx) => {
-    let deck; // full deck for game
-    let board; // played cards on the table
-    let players; // assuming 2 players (0 & 1) accessed by arr idx
-  
-    deck = new Deck();
-    if(testing) deck.cards = deck.cards.splice(0, 20);
-    board = [];
-    players = Array(ctx.numPlayers).fill({
+  setup: (ctx) => ({
+    deck: new Deck(),
+    board: [],
+    players: Array(ctx.numPlayers).fill({
       hand: [],
       score: 0
-    });
-
-    return { deck, board, players }
-  },
+    }),
+  }),
 
   moves: {
 
