@@ -1,5 +1,6 @@
 // import { INVALID_MOVE } from 'boardgame.io/core';
 import Deck from './Deck';
+import { assignDealer, resetHands } from './helpers';
 
 export const Cribbage = {
   setup: (ctx) => ({
@@ -7,10 +8,10 @@ export const Cribbage = {
     board: [],
     players: Array(ctx.numPlayers).fill({
       hand: [],
-      score: 0
+      score: 0,
+      dealer: false
     }),
   }),
-
   moves: {
 
   },
@@ -33,7 +34,29 @@ export const Cribbage = {
       // each player chooses a random card
       // lowest card is the dealer of 1st hand
       start: true,
-      next: 'cribbing'
+      next: 'cribbing',
+      onBegin: (G, ctx) => {
+        // shuffle the deck
+        G.deck = G.deck.shuffle()
+        return G;
+      },
+      turn: {
+        moveLimit: 1
+      },
+      moves: {
+        selectCard: (G, ctx, index) => {
+          // TODO: remove chosen from deck
+          G.players[ctx.currentPlayer].hand.push(G.deck.cards[index])
+        }
+      },
+      endIf: (G, ctx) => {
+        return (ctx.turn > ctx.numPlayers);
+      },
+      onEnd: (G, ctx) => {
+        // TODO: log for a tie
+        G.players = assignDealer(G.players)
+        G.players = resetHands(G.players);
+      },
     },
     cribbing: {
       onBegin: (G, ctx) => {
@@ -47,11 +70,10 @@ export const Cribbage = {
 
       },
 
-      // Ends the phase if this returns true.
-      // endIf: (G, ctx) => {
-      //   // once both players have selected their cards for the crib
-      //   return true;
-      // },
+      // Ends the phase if this returns anything.
+      endIf: (G, ctx) => {
+        // once both players have selected their cards for the crib
+      },
 
       onEnd: (G, ctx) => {
         // cut for flipped card
@@ -70,10 +92,9 @@ export const Cribbage = {
 
       },
 
-      // endIf: (G, ctx) => {
-      //   // all players hands are empty
-      //   return true;
-      // },
+      endIf: (G, ctx) => {
+        // all players hands are empty
+      },
 
       next: 'scoring',
     },
@@ -87,10 +108,9 @@ export const Cribbage = {
         }
       },
 
-      // endIf: (G, ctx) => {
-      //   // all players done scoring
-      //   return true;
-      // },
+      endIf: (G, ctx) => {
+        // all players done scoring
+      },
 
       onEnd: (G, ctx) => {
         // change dealer

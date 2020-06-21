@@ -5,25 +5,38 @@ export default class Deck {
   }
   
   static suits = ["S", "D", "C", "H"];
-  static values = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+  static ranks = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
   
   static create() {
-    let deck = [];
+    let cards = [];
     for(let i = 0; i < Deck.suits.length; i++) {
-      for(let j = 0; j < Deck.values.length; j++) {
-        let card = {value: Deck.values[j], suit: Deck.suits[i]};
-        deck.push(card);
+      for(let j = 0; j < Deck.ranks.length; j++) {
+        let suit = Deck.suits[i];
+        let rank = Deck.ranks[j];
+        let value = ((rank) => {
+          switch(rank) {
+            case "A":
+              return 1;
+            case "J":
+            case "Q":
+            case "K":
+              return 10;
+            default:
+              return Number(rank);
+          }
+        })(rank)
+        cards.push({suit, rank, value});
       }
     }
-    return deck; 
+    return cards; 
   }
 
   shuffle() {
-    for (let i = this.deck.length - 1; i > 0; i--) {
+    for (let i = this.cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+      [this.cards[i], this.cards[j]] = [this.cards[j], this.cards[i]];
     }
-    return this.deck;
+    return this;
   }
 
 }
