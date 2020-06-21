@@ -39,4 +39,9 @@ export default class Deck {
     return this;
   }
 
+  take(index) {
+    let [removed] = this.cards.splice(index, 1);
+    return removed;
+  }
+
 }
