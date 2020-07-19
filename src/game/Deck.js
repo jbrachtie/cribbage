@@ -1,7 +1,7 @@
 export default class Deck {
   constructor() {
-    this.cards = Deck.create();
-    this.flipped = null;
+    this.cards = Deck.create(); // make card its own class
+    this.flipped = null; // maybe move this to game state
   }
   
   static suits = ["S", "D", "C", "H"];
